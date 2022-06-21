@@ -28,6 +28,12 @@ npm run dev
 npm run build
 ```
 
+### Compile Json-Server
+
+```sh
+json-server-auth server/db.json -r server/routes.json --port 5050
+```
+
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh

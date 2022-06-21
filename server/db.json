@@ -1,3 +1,97 @@
 {
-  "users": []
+  "users": [
+    {
+      "email": "hbcordova10@gmail.com",
+      "password": "$2a$10$7azbUs4/3D1VTZZIG6ikduf//rOEQIbyiOGQFrU0WJ1T8c6UItT7a",
+      "name": "Heber",
+      "lastname": "Cordova Jimenez",
+      "country": "Perú",
+      "username": "hbcordova",
+      "id": 1
+    },
+    {
+      "email": "mariacordova@gmail.com",
+      "password": "$2a$10$zB/QWcdZBsP78Ifr6AmPIeUwGSqU87u86TrY9wki4zc4AyO.lZuxS",
+      "name": "Maria",
+      "lastname": "Cordova",
+      "country": "Perú",
+      "username": "macordova",
+      "id": 2
+    },
+    {
+      "email": "macordova@dyglovo.com",
+      "password": "$2a$10$qx/9MGhkfxxmk0gnh5qpW.XV5FoILSRYwDYjmXVh/wqFjuwOMEtgC",
+      "id": 3
+    }
+  ],
+  "bonds": [
+    {
+      "id": 1,
+      "userId": 2,
+      "name": "T&C Asociados",
+      "nominalValue": "2000 USD",
+      "couponRate": "2%",
+      "market": "Primario"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "name": "Interbank Group",
+      "nominalValue": "10000 PEN",
+      "couponRate": "5%",
+      "market": "Secundario"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "name": "Alicorp Bound",
+      "nominalValue": "5500 PEN",
+      "couponRate": "3%",
+      "market": "Primario"
+    }
+  ],
+  "currencies": [
+    {
+      "id": 1,
+      "name": "PEN",
+      "priceDollar": "0.27"
+    },
+    {
+      "id": 2,
+      "name": "USD",
+      "priceDollar": "1"
+    },
+    {
+      "id": 3,
+      "name": "EUR",
+      "priceDollar": "1.05"
+    }
+  ],
+  "frequencies": [
+    {
+      "id": 1,
+      "name": "Semestral",
+      "periods": 2
+    },
+    {
+      "id": 2,
+      "name": "Mensual",
+      "periods": 12
+    },
+    {
+      "id": 3,
+      "name": "Trimestral",
+      "periods": 4
+    },
+    {
+      "id": 4,
+      "name": "Bimestral",
+      "periods": 6
+    },
+    {
+      "id": 5,
+      "name": "Diario",
+      "periods": 360
+    }
+  ]
 }

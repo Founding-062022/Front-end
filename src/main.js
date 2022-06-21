@@ -6,6 +6,9 @@ import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
 import "primevue/resources/themes/md-light-indigo/theme.css"; //theme
 import "/node_modules/primeflex/primeflex.css"; //prime-flex
+import VueSmoothScroll from 'vue3-smooth-scroll'
+import ToastService from 'primevue/toastservice';
+import store from "./store";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
@@ -14,20 +17,36 @@ import Toolbar from "primevue/toolbar";
 import InputSwitch from "primevue/inputswitch";
 import Toast from "primevue/toast";
 import DataTable from "primevue/datatable";
+import Checkbox from "primevue/checkbox";
+import Password from "primevue/password";
+import OverlayPanel from "primevue/overlaypanel";
+import Dropdown from "primevue/dropdown";
+import Column from "primevue/column";
+import Dialog from "primevue/dialog";
+import Calendar from "primevue/calendar";
 
 const app = createApp(App);
 
 app.use(router);
 app.use(PrimeVue, { ripple: true });
+app.use(VueSmoothScroll);
+app.use(store);
+app.use(ToastService);
 
 //Components
 app.component("pv-button", Button);
 app.component("pv-data-table", DataTable);
 app.component("pv-input-text", InputText);
 app.component("pv-input-number", InputNumber);
+app.component("pv-password", Password);
 app.component("pv-card", Card);
 app.component("pv-toolbar", Toolbar);
 app.component("pv-input-switch", InputSwitch);
 app.component("pv-toast", Toast);
-
+app.component("pv-checkbox", Checkbox);
+app.component("pv-overlay-panel", OverlayPanel);
+app.component("pv-dropdown", Dropdown);
+app.component("pv-column", Column);
+app.component("pv-dialog", Dialog);
+app.component("pv-calendar", Calendar);
 app.mount("#app");

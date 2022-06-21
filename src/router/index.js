@@ -1,23 +1,36 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
+import AppHome from "../views/AppHome.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    /**
     {
-      path: '/',
-      name: 'home',
-      component: HomeView
+      path: "/",
+      redirect: { name: "home" },
     },
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }**/
-  ]
-})
+      path: "/home",
+      name: "home",
+      component: AppHome,
+    },
+    {
+      path: "/user/:id/home",
+      name: "user-home",
+      component: () => import("../bonds/pages/bond-home.component.vue"),
+    },
+  ],
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  const publicPages = ["/home"];
+  const USER_KEY = "user";
+  const authRequired = !publicPages.includes(to.path);
+  const loggedIn = JSON.parse(localStorage.getItem(USER_KEY));
+  if (authRequired && !loggedIn) {
+    next("/home");
+  } else {
+    next();
+  }
+});
+
+export default router;
