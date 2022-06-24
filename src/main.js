@@ -24,6 +24,7 @@ import Dropdown from "primevue/dropdown";
 import Column from "primevue/column";
 import Dialog from "primevue/dialog";
 import Calendar from "primevue/calendar";
+import Menu from "primevue/menu";
 
 const app = createApp(App);
 
@@ -49,4 +50,5 @@ app.component("pv-dropdown", Dropdown);
 app.component("pv-column", Column);
 app.component("pv-dialog", Dialog);
 app.component("pv-calendar", Calendar);
+app.component("pv-menu", Menu);
 app.mount("#app");

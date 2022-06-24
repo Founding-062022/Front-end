@@ -12,22 +12,37 @@
         <h2 class="text-center">Bonos Corporativos</h2>
       </div>
     </template>
-    <form ref="addBondForm" @submit.prevent="handleSubmit(!v$.$invalid)" class="p-fluid">
+    <form
+      ref="addBondForm"
+      @submit.prevent="handleSubmit(!v$.$invalid)"
+      class="p-fluid"
+    >
       <div class="field">
-        <label :class="{'p-error':v$.name.$invalid && submitted}" for="name">Name</label>
+        <label :class="{ 'p-error': v$.name.$invalid && submitted }" for="name"
+          >Name</label
+        >
         <pv-input-text
           v-model="name"
-          :class="{'p-invalid':v$.name.$invalid && submitted}"
+          :class="{ 'p-invalid': v$.name.$invalid && submitted }"
           id="name"
           placeholder="Founding Bound"
         ></pv-input-text>
-        <small v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response" class="p-error">{{v$.name.required.$message.replace('Value', 'Name')}}</small>
+        <small
+          v-if="(v$.name.$invalid && submitted) || v$.name.$pending.$response"
+          class="p-error"
+          >{{ v$.name.required.$message.replace("Value", "Name") }}</small
+        >
       </div>
       <div class="field">
-        <label for="nominalValue">Valor Nominal</label>
+        <label
+          :class="{ 'p-error': v$.nominalValue.$invalid && submitted }"
+          for="nominalValue"
+          >Valor Nominal</label
+        >
         <div class="flex">
           <pv-input-number
             v-model="nominalValue"
+            :class="{ 'p-invalid': v$.nominalValue.$invalid && submitted }"
             id="nominalValue"
             placeholder="2000"
           ></pv-input-number>
@@ -38,26 +53,71 @@
             v-model="currency"
           ></pv-dropdown>
         </div>
+        <small
+          v-if="
+            (v$.nominalValue.$invalid && submitted) ||
+            v$.nominalValue.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.nominalValue.required.$message.replace("Value", "Nominal Value")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="couponRate">Tasa Cupon</label>
+        <label
+          :class="{ 'p-error': v$.couponRate.$invalid && submitted }"
+          for="couponRate"
+          >Tasa Cupon</label
+        >
         <pv-input-number
+          :class="{ 'p-invalid': v$.couponRate.$invalid && submitted }"
           v-model="couponRate"
           id="couponRate"
           placeholder="2%"
         ></pv-input-number>
+        <small
+          v-if="
+            (v$.couponRate.$invalid && submitted) ||
+            v$.couponRate.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.couponRate.required.$message.replace("Value", "Coupon Rate")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="expiration">Vencimiento</label>
+        <label
+          :class="{ 'p-error': v$.expiration.$invalid && submitted }"
+          for="expiration"
+          >Vencimiento</label
+        >
         <pv-calendar
+          :class="{ 'p-invalid': v$.expiration.$invalid && submitted }"
           v-model="expiration"
           id="expiration"
           placeholder="Ingresa la fecha de vencimiento"
         ></pv-calendar>
+        <small
+          v-if="
+            (v$.expiration.$invalid && submitted) ||
+            v$.expiration.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.expiration.required.$message.replace("Value", "Expiration")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="capitalizationType">Capitalizacion</label>
+        <label
+          :class="{ 'p-error': v$.frequency.$invalid && submitted }"
+          for="capitalizationType"
+          >Capitalizacion</label
+        >
         <pv-dropdown
+          :class="{ 'p-invalid': v$.frequency.$invalid && submitted }"
           :options="frequencies"
           v-model="frequency"
           optionLabel="name"
@@ -65,17 +125,42 @@
           id="capitalizationType"
           placeholder="Seleccione el tipo de capitalización"
         ></pv-dropdown>
+        <small
+          v-if="
+            (v$.frequency.$invalid && submitted) ||
+            v$.frequency.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.frequency.required.$message.replace("Value", "Frequency")
+          }}</small
+        >
       </div>
       <div class="field">
-        <label for="marketType">Tipo de Mercado</label>
+        <label
+          :class="{ 'p-error': v$.marketType.$invalid && submitted }"
+          for="marketType"
+          >Tipo de Mercado</label
+        >
         <pv-dropdown
+          :class="{ 'p-invalid': v$.marketType.$invalid && submitted }"
           :options="marketTypes"
           v-model="marketType"
           id="marketType"
           placeholder="Seleccione el tipo de mercado"
         ></pv-dropdown>
+        <small
+          v-if="
+            (v$.marketType.$invalid && submitted) ||
+            v$.marketType.$pending.$response
+          "
+          class="p-error"
+          >{{
+            v$.marketType.required.$message.replace("Value", "Market type")
+          }}</small
+        >
       </div>
-      <div class="">
+      <div v-if="marketType === 'Secundario'">
         <div class="field">
           <label for="performanceRate">Rendimiento de Mercado</label>
           <pv-input-number
@@ -101,17 +186,22 @@
           class="w-7rem p-button-text"
           label="Cerrar"
         ></pv-button>
-        <pv-button @click="handleSubmit" class="w-7rem p-button-success" label="Agregar"></pv-button>
+        <pv-button
+          @click="executeSubmitEvent"
+          class="w-7rem p-button-success"
+          label="Agregar"
+        ></pv-button>
       </div>
     </template>
   </pv-dialog>
 </template>
 
 <script>
-import { required } from "@vuelidate/validators";
+import { helpers, required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import CurrencyService from "../services/currency.service";
 import FrequencyService from "../services/frequency.service";
+import BondService from "../services/bond.service";
 export default {
   name: "bond-add",
   setup: () => ({ v$: useVuelidate() }),
@@ -123,7 +213,6 @@ export default {
       nominalValue: null,
       couponRate: null,
       expiration: null,
-      capitalizationType: null,
       marketType: "",
       performanceRate: null,
       buyingPeriod: null,
@@ -139,11 +228,34 @@ export default {
       name: {
         required,
       },
+      nominalValue: {
+        required,
+      },
+      couponRate: {
+        required,
+      },
+      expiration: {
+        required,
+      },
+      frequency: {
+        required,
+      },
+      marketType: {
+        required,
+      },
     };
+  },
+  computed: {
+    currentUser() {
+      return this.$store.state.auth.user;
+    },
   },
   methods: {
     closeDialogBondAdd() {
       this.$emit("close-dialog-add");
+    },
+    executeSubmitEvent() {
+      this.$refs.addBondForm.requestSubmit();
     },
     async getCurrencies() {
       await CurrencyService.getAll()
@@ -160,9 +272,40 @@ export default {
           });
         });
     },
-    handleSubmit(isFormValid) {
+    async handleSubmit(isFormValid) {
       this.submitted = true;
-      console.log("here");
+      if (isFormValid) {
+        const dtoBond = {
+          name: this.name,
+          userId: this.currentUser.id,
+          nominalValue: this.nominalValue,
+          couponRate: this.couponRate,
+          expiration: this.expiration,
+          frequency: this.frequency,
+          market: this.marketType,
+        };
+        if (this.marketType === "Secundario") {
+          dtoBond.performanceRate = this.performanceRate;
+          dtoBond.buyingPeriod = this.buyingPeriod;
+        }
+        await BondService.post(dtoBond)
+          .then((response) => {
+            this.$toast.add({
+              severity: "success",
+              summary: `New bonus registered`,
+              detail: `${response.data.name} registered`,
+            });
+            this.reset();
+            this.$emit("bond-registered");
+          })
+          .catch((error) => {
+            this.$toast.add({
+              severity: "error",
+              summary: "An error occurred",
+              detail: `${error.message}`,
+            });
+          });
+      }
     },
     async getFrequencies() {
       await FrequencyService.getAll()
@@ -178,6 +321,18 @@ export default {
           });
         });
     },
+    reset() {
+      this.submitted = false;
+      this.name = null;
+      this.nominalValue = null;
+      this.couponRate = null;
+      this.expiration = null;
+      this.marketType = "";
+      this.performanceRate = null;
+      this.buyingPeriod = null;
+      this.currency = "PEN";
+      this.frequency = null;
+    }
   },
   mounted() {
     this.getCurrencies();

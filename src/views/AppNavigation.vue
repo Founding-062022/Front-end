@@ -43,6 +43,7 @@
         v-if="currentUser"
         :label="currentUser.username"
         class="p-toolbar-separator ml-5"
+        @click="toggleUserMenu"
       ></pv-button>
       <pv-button
         v-else
@@ -52,6 +53,9 @@
       ></pv-button>
     </template>
   </pv-toolbar>
+  <pv-overlay-panel ref="user-options">
+    <pv-menu class="border-none" :model="options"></pv-menu>
+  </pv-overlay-panel>
   <pv-overlay-panel ref="log-in">
     <form @submit.prevent="handleSubmit(!v$.$invalid)" class="pt-3 px-3">
       <div class="p-fluid">
@@ -116,6 +120,23 @@ export default {
       submitted: false,
       isLoading: false,
       accountNotFound: false,
+      options: [
+        {
+          label: "Mi Perfil",
+          icon: "pi pi-user",
+          command: (event) => {
+            this.$refs["user-options"].toggle(event);
+          }
+        },
+        {
+          label: "Cerrar Sesion",
+          icon: "pi pi-sign-in",
+          command: (event) => {
+            this.$store.dispatch("auth/logout");
+            this.$refs["user-options"].toggle(event);
+          }
+        }
+      ]
     };
   },
   validations() {
@@ -139,10 +160,13 @@ export default {
     toggle(event) {
       this.$refs["log-in"].toggle(event);
     },
+    toggleUserMenu(event) {
+      this.$refs["user-options"].toggle(event);
+    },
     goToMyBonds() {
       this.$router.push({name: "user-home", params: {id: this.currentUser.id}});
     },
-    handleSubmit(isFormValid) {
+    handleSubmit(isFormValid, event) {
       this.submitted = true;
       if (isFormValid) {
         setTimeout(() => (this.isLoading = true), 100);
@@ -151,11 +175,11 @@ export default {
           this.email,
           this.password
         );
-        console.log(logInRequest);
         this.$store
           .dispatch("auth/login", logInRequest)
           .then(() => {
             this.accountNotFound = false;
+            this.$refs["log-in"].toggle(event);
             this.$toast.add({
               severity: "success",
               summary: `Welcome ${this.currentUser.name} ${this.currentUser.lastname}`,

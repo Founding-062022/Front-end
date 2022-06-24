@@ -26,14 +26,6 @@
   ],
   "bonds": [
     {
-      "id": 1,
-      "userId": 2,
-      "name": "T&C Asociados",
-      "nominalValue": "2000 USD",
-      "couponRate": "2%",
-      "market": "Primario"
-    },
-    {
       "id": 2,
       "userId": 1,
       "name": "Interbank Group",
@@ -42,12 +34,36 @@
       "market": "Secundario"
     },
     {
-      "id": 3,
+      "name": "Interbank Group",
       "userId": 2,
-      "name": "Alicorp Bound",
-      "nominalValue": "5500 PEN",
-      "couponRate": "3%",
-      "market": "Primario"
+      "nominalValue": 3000,
+      "couponRate": 4,
+      "expiration": "2025-07-01T05:00:00.000Z",
+      "frequency": "Semestral",
+      "market": "Primario",
+      "id": 4
+    },
+    {
+      "name": "Alicorp SAC",
+      "userId": 2,
+      "nominalValue": 3000,
+      "couponRate": 4,
+      "expiration": "2025-03-02T05:00:00.000Z",
+      "frequency": "Semestral",
+      "market": "Primario",
+      "id": 5
+    },
+    {
+      "name": "Gloria SAC",
+      "userId": 2,
+      "nominalValue": 5000,
+      "couponRate": 5,
+      "expiration": "2026-07-07T05:00:00.000Z",
+      "frequency": "Semestral",
+      "market": "Secundario",
+      "performanceRate": 3,
+      "buyingPeriod": "2024-02-04T05:00:00.000Z",
+      "id": 6
     }
   ],
   "currencies": [

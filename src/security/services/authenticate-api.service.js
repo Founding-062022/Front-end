@@ -1,5 +1,6 @@
 import axios from "axios";
 import User from "../models/user.entity";
+import router from "../../router";
 
 const API_URL = "http://localhost:5050/api/v1";
 const USER_KEY = "user";
@@ -29,7 +30,10 @@ class AuthenticateApiService {
     return axios.post(`${API_URL}/register`, request);
   }
   signOff() {
-    localStorage.removeItem(USER_KEY);
+    router.push({ name: "home" }).then(r => {
+      console.log(r);
+      localStorage.removeItem(USER_KEY);
+    });
   }
 }
 

@@ -57,6 +57,7 @@
       </pv-data-table>
       <bond-add-dialog
         v-on:close-dialog-add="closeDialogAdd"
+        v-on:bond-registered="bondRegistered"
         v-bind:dialog-add-visible="bondAddDialog"
       ></bond-add-dialog>
       <bond-compare-dialog
@@ -93,6 +94,7 @@
             @click="bondDeleteDialog = false"
           ></pv-button>
           <pv-button
+            @click="deleteBondsAsync"
             label="Aceptar"
             icon="pi pi-check"
             class="p-button-danger"
@@ -131,8 +133,25 @@ export default {
     closeDialogAdd() {
       this.bondAddDialog = false;
     },
+    bondRegistered() {
+      this.closeDialogAdd();
+      this.getBounds();
+    },
     closeDialogCompare() {
       this.bondCompareDialog = false;
+    },
+    async deleteBonds() {
+      for (let i = 0; i < this.selectedBounds.length; i++) {
+        this.bounds = this.bounds.filter(
+          (bound) => bound.id !== this.selectedBounds.at(i).id
+        );
+        await BondService.delete(this.selectedBounds.at(i).id);
+      }
+    },
+    deleteBondsAsync() {
+      this.deleteBonds();
+      this.bondDeleteDialog = false;
+      this.selectedBounds.splice(0, this.selectedBounds.length);
     },
     async getBounds() {
       await BondService.getByUserId(this.currentUser.id)
@@ -148,13 +167,11 @@ export default {
           });
         });
     },
-    getCurrencies() {
-
-    }
+    getCurrencies() {},
   },
   mounted() {
     this.getBounds();
-  }
+  },
 };
 </script>
 
