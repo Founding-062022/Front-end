@@ -14,9 +14,14 @@ const router = createRouter({
       component: AppHome,
     },
     {
-      path: "/user/:id/home",
+      path: "/users/:id/bonds",
       name: "user-home",
       component: () => import("../bonds/pages/bond-home.component.vue"),
+    },
+    {
+      path: "/users/:id/bonds/:idBond",
+      name: "user-bond",
+      component: () => import("../bonds/pages/bond-detail.component.vue"),
     },
   ],
 });

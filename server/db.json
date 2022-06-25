@@ -34,36 +34,26 @@
       "market": "Secundario"
     },
     {
+      "name": "Alicorp SAC",
+      "userId": 2,
+      "nominalValue": 1500,
+      "currency": "USD",
+      "couponRate": 5,
+      "expiration": "2025-02-04T05:00:00.000Z",
+      "frequency": "Anual",
+      "market": "Primario",
+      "id": 3
+    },
+    {
       "name": "Interbank Group",
       "userId": 2,
-      "nominalValue": 3000,
+      "nominalValue": 10000,
+      "currency": "PEN",
       "couponRate": 4,
-      "expiration": "2025-07-01T05:00:00.000Z",
+      "expiration": "2024-07-02T05:00:00.000Z",
       "frequency": "Semestral",
       "market": "Primario",
       "id": 4
-    },
-    {
-      "name": "Alicorp SAC",
-      "userId": 2,
-      "nominalValue": 3000,
-      "couponRate": 4,
-      "expiration": "2025-03-02T05:00:00.000Z",
-      "frequency": "Semestral",
-      "market": "Primario",
-      "id": 5
-    },
-    {
-      "name": "Gloria SAC",
-      "userId": 2,
-      "nominalValue": 5000,
-      "couponRate": 5,
-      "expiration": "2026-07-07T05:00:00.000Z",
-      "frequency": "Semestral",
-      "market": "Secundario",
-      "performanceRate": 3,
-      "buyingPeriod": "2024-02-04T05:00:00.000Z",
-      "id": 6
     }
   ],
   "currencies": [
@@ -86,26 +76,21 @@
   "frequencies": [
     {
       "id": 1,
+      "name": "Anual",
+      "periods": 1
+    },
+    {
+      "id": 2,
       "name": "Semestral",
       "periods": 2
     },
     {
-      "id": 2,
+      "id": 3,
       "name": "Mensual",
       "periods": 12
     },
     {
-      "id": 3,
-      "name": "Trimestral",
-      "periods": 4
-    },
-    {
       "id": 4,
-      "name": "Bimestral",
-      "periods": 6
-    },
-    {
-      "id": 5,
       "name": "Diario",
       "periods": 360
     }

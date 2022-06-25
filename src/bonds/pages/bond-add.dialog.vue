@@ -94,6 +94,7 @@
           >Vencimiento</label
         >
         <pv-calendar
+          dateFormat="dd/mm/yy"
           :class="{ 'p-invalid': v$.expiration.$invalid && submitted }"
           v-model="expiration"
           id="expiration"
@@ -172,6 +173,7 @@
         <div class="field">
           <label for="buyingPeriod">Periodo Compra</label>
           <pv-calendar
+            dateFormat="dd/mm/yy"
             v-model="buyingPeriod"
             id="buyingPeriod"
             placeholder="Ingresa el perido de compra"
@@ -197,7 +199,7 @@
 </template>
 
 <script>
-import { helpers, required } from "@vuelidate/validators";
+import { required } from "@vuelidate/validators";
 import { useVuelidate } from "@vuelidate/core";
 import CurrencyService from "../services/currency.service";
 import FrequencyService from "../services/frequency.service";
@@ -279,6 +281,7 @@ export default {
           name: this.name,
           userId: this.currentUser.id,
           nominalValue: this.nominalValue,
+          currency: this.currency,
           couponRate: this.couponRate,
           expiration: this.expiration,
           frequency: this.frequency,
@@ -294,6 +297,7 @@ export default {
               severity: "success",
               summary: `New bonus registered`,
               detail: `${response.data.name} registered`,
+              life: 3000,
             });
             this.reset();
             this.$emit("bond-registered");
@@ -303,6 +307,7 @@ export default {
               severity: "error",
               summary: "An error occurred",
               detail: `${error.message}`,
+              life: 3000,
             });
           });
       }

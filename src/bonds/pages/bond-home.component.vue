@@ -1,7 +1,7 @@
 <template>
   <div class="container h-content">
     <div
-      class="flex flex-column md:flex-row md:justify-content-between align-items-center mt-4"
+      class="flex flex-column md:flex-row md:justify-content-between align-items-center mt-4 mb-2"
     >
       <div>
         <h2>Mis bonos</h2>
@@ -39,15 +39,24 @@
         ></pv-column>
         <pv-column field="id" header="Codigo"></pv-column>
         <pv-column field="name" header="Nombre"></pv-column>
-        <pv-column field="nominalValue" header="Valor Nominal"></pv-column>
-        <pv-column field="couponRate" header="Tasa Cupon"></pv-column>
+        <pv-column header="Valor Nominal">
+          <template #body="slotProps">
+            {{ slotProps.data.nominalValue }} {{ slotProps.data.currency }}
+          </template>
+        </pv-column>
+        <pv-column header="Tasa Cupon">
+          <template #body="slotProps">
+            {{slotProps.data.couponRate}}%
+          </template>
+        </pv-column>
         <pv-column field="market" header="Mercado"></pv-column>
         <pv-column
           headerStyle="min-width: 4rem; text-align: center"
           bodyStyle="text-align: center; overflow: visible"
         >
-          <template #body>
+          <template #body="slotProps">
             <pv-button
+              @click="goToBondDetail(slotProps.data.id)"
               type="button"
               class="p-button-rounded"
               icon="pi pi-eye"
@@ -133,6 +142,9 @@ export default {
     closeDialogAdd() {
       this.bondAddDialog = false;
     },
+    goToBondDetail(id) {
+      this.$router.push({ name: "user-bond", params: { idBond: id } });
+    },
     bondRegistered() {
       this.closeDialogAdd();
       this.getBounds();
@@ -148,8 +160,8 @@ export default {
         await BondService.delete(this.selectedBounds.at(i).id);
       }
     },
-    deleteBondsAsync() {
-      this.deleteBonds();
+    async deleteBondsAsync() {
+      await this.deleteBonds();
       this.bondDeleteDialog = false;
       this.selectedBounds.splice(0, this.selectedBounds.length);
     },

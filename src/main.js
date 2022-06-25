@@ -25,6 +25,8 @@ import Column from "primevue/column";
 import Dialog from "primevue/dialog";
 import Calendar from "primevue/calendar";
 import Menu from "primevue/menu";
+import ColumnGroup from "primevue/columngroup";
+import Row from "primevue/row";
 
 const app = createApp(App);
 
@@ -51,4 +53,6 @@ app.component("pv-column", Column);
 app.component("pv-dialog", Dialog);
 app.component("pv-calendar", Calendar);
 app.component("pv-menu", Menu);
+app.component("pv-column-group", ColumnGroup);
+app.component("pv-row", Row);
 app.mount("#app");
