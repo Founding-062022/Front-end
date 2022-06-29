@@ -337,7 +337,7 @@ export default {
       this.buyingPeriod = null;
       this.currency = "PEN";
       this.frequency = null;
-    }
+    },
   },
   mounted() {
     this.getCurrencies();

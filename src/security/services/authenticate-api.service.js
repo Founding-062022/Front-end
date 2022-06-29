@@ -30,7 +30,7 @@ class AuthenticateApiService {
     return axios.post(`${API_URL}/register`, request);
   }
   signOff() {
-    router.push({ name: "home" }).then(r => {
+    router.push({ name: "home" }).then((r) => {
       console.log(r);
       localStorage.removeItem(USER_KEY);
     });

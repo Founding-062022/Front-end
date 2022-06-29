@@ -3,7 +3,7 @@ import AppNavigation from "./views/AppNavigation.vue";
 import AppFooter from "./views/AppFooter.vue";
 export default {
   name: "App",
-  components: {AppNavigation, AppFooter}
+  components: { AppNavigation, AppFooter },
 };
 </script>
 

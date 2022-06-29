@@ -62,8 +62,11 @@
     </div>
     <pv-data-table :value="table">
       <pv-column field="name"></pv-column>
-      <div v-for="index in frequency+1" v-bind:key="index">
-        <pv-column :header="`${index-1}`" :field="`period${index-1}`"></pv-column>
+      <div v-for="index in frequency + 1" v-bind:key="index">
+        <pv-column
+          :header="`${index - 1}`"
+          :field="`period${index - 1}`"
+        ></pv-column>
       </div>
     </pv-data-table>
   </div>
@@ -131,12 +134,22 @@ export default {
           interest[`period${i}`] = 0;
           quota[`period${i}`] = -this.bond.nominalValue;
         } else {
-          quota[`period${i}`] =
-            (this.bond.nominalValue * ((couponRate * Math.pow(1 + couponRate, frequency)) / (Math.pow(1 + couponRate, frequency) - 1))).toFixed(2);
-          interest[`period${i}`] = (capital[`period${i - 1}`] * couponRate).toFixed(2);
-          amortization[`period${i}`] = (quota[`period${i}`] - interest[`period${i}`]).toFixed(2);
-          let capitalValue = capital[`period${i-1}`] - amortization[`period${i}`];
-          capital[`period${i}`] = (capitalValue >= 0? capitalValue : capitalValue*-1).toFixed();
+          quota[`period${i}`] = (
+            this.bond.nominalValue *
+            ((couponRate * Math.pow(1 + couponRate, frequency)) /
+              (Math.pow(1 + couponRate, frequency) - 1))
+          ).toFixed(2);
+          interest[`period${i}`] = (
+            capital[`period${i - 1}`] * couponRate
+          ).toFixed(2);
+          amortization[`period${i}`] = (
+            quota[`period${i}`] - interest[`period${i}`]
+          ).toFixed(2);
+          let capitalValue =
+            capital[`period${i - 1}`] - amortization[`period${i}`];
+          capital[`period${i}`] = (
+            capitalValue >= 0 ? capitalValue : capitalValue * -1
+          ).toFixed();
         }
       }
       this.table.push(capital);

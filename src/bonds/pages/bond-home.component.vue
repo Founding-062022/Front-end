@@ -46,7 +46,7 @@
         </pv-column>
         <pv-column header="Tasa Cupon">
           <template #body="slotProps">
-            {{slotProps.data.couponRate}}%
+            {{ slotProps.data.couponRate }}%
           </template>
         </pv-column>
         <pv-column field="market" header="Mercado"></pv-column>

@@ -22,6 +22,15 @@
       "email": "macordova@dyglovo.com",
       "password": "$2a$10$qx/9MGhkfxxmk0gnh5qpW.XV5FoILSRYwDYjmXVh/wqFjuwOMEtgC",
       "id": 3
+    },
+    {
+      "email": "leonardo.grau@outlook.com.pe",
+      "password": "$2a$10$WMQtjMbpLPSpHcEcJQwWxuHmYb.7LHt6fvoZmlJ06R.3BIpd3Dd4C",
+      "name": "Leonardo Manuel",
+      "lastname": "Vargas",
+      "country": "Chipre",
+      "username": "LeoGrau",
+      "id": 4
     }
   ],
   "bonds": [
