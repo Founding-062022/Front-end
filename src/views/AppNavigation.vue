@@ -29,7 +29,7 @@
           href="#sign-up"
           v-smooth-scroll
           class="p-button p-button-text no-underline p-toolbar-separator visible"
-        >Unirse</a
+          >Unirse</a
         >
       </div>
     </template>
@@ -126,7 +126,7 @@ export default {
           icon: "pi pi-user",
           command: (event) => {
             this.$refs["user-options"].toggle(event);
-          }
+          },
         },
         {
           label: "Cerrar Sesion",
@@ -134,15 +134,16 @@ export default {
           command: (event) => {
             this.$store.dispatch("auth/logout");
             this.$refs["user-options"].toggle(event);
-          }
-        }
-      ]
+          },
+        },
+      ],
     };
   },
   validations() {
     return {
       email: {
-        required, email
+        required,
+        email,
       },
       password: {
         required,
@@ -164,17 +165,17 @@ export default {
       this.$refs["user-options"].toggle(event);
     },
     goToMyBonds() {
-      this.$router.push({name: "user-home", params: {id: this.currentUser.id}});
+      this.$router.push({
+        name: "user-home",
+        params: { id: this.currentUser.id },
+      });
     },
     handleSubmit(isFormValid, event) {
       this.submitted = true;
       if (isFormValid) {
         setTimeout(() => (this.isLoading = true), 100);
         this.accountNotFound = false;
-        const logInRequest = new AuthenticateRequest(
-          this.email,
-          this.password
-        );
+        const logInRequest = new AuthenticateRequest(this.email, this.password);
         this.$store
           .dispatch("auth/login", logInRequest)
           .then(() => {

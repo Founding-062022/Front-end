@@ -15,7 +15,11 @@
     <div>Here content</div>
     <template #footer>
       <div class="flex justify-content-end w-full">
-        <pv-button @click="closeDialogBondCompare" class="w-7rem p-button-info" label="Cerrar"></pv-button>
+        <pv-button
+          @click="closeDialogBondCompare"
+          class="w-7rem p-button-info"
+          label="Cerrar"
+        ></pv-button>
       </div>
     </template>
   </pv-dialog>
@@ -24,15 +28,13 @@
 <script>
 export default {
   name: "bond-compare",
-  props: {dialogCompareVisible: Boolean, selectedBounds: Array},
+  props: { dialogCompareVisible: Boolean, selectedBounds: Array },
   methods: {
     closeDialogBondCompare() {
       this.$emit("close-dialog-compare");
-    }
-  }
+    },
+  },
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

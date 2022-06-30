@@ -6,8 +6,8 @@ import "primeicons/primeicons.css";
 import PrimeVue from "primevue/config";
 import "primevue/resources/themes/md-light-indigo/theme.css"; //theme
 import "/node_modules/primeflex/primeflex.css"; //prime-flex
-import VueSmoothScroll from 'vue3-smooth-scroll'
-import ToastService from 'primevue/toastservice';
+import VueSmoothScroll from "vue3-smooth-scroll";
+import ToastService from "primevue/toastservice";
 import store from "./store";
 import Button from "primevue/button";
 import InputText from "primevue/inputtext";

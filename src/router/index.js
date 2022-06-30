@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import AppHome from "../views/AppHome.vue";
+import GermanMethod from "../german-method/german-method-calc.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,6 +23,11 @@ const router = createRouter({
       path: "/users/:id/bonds/:idBond",
       name: "user-bond",
       component: () => import("../bonds/pages/bond-detail.component.vue"),
+    },
+    {
+      path: "/german-method",
+      name: "german-method",
+      component: GermanMethod,
     },
   ],
 });
