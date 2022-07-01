@@ -43,26 +43,28 @@
       "market": "Secundario"
     },
     {
-      "name": "Alicorp SAC",
+      "name": "T&C Asociados",
       "userId": 2,
-      "nominalValue": 1500,
+      "nominalValue": 6000,
       "currency": "USD",
-      "couponRate": 5,
-      "expiration": "2025-02-04T05:00:00.000Z",
+      "couponRate": 4,
+      "expiration": "2025-07-01T05:00:00.000Z",
       "frequency": "Anual",
       "market": "Primario",
-      "id": 3
+      "discountRate": 5.6,
+      "id": 5
     },
     {
       "name": "Interbank Group",
       "userId": 2,
-      "nominalValue": 10000,
+      "nominalValue": 4000,
       "currency": "PEN",
-      "couponRate": 4,
-      "expiration": "2024-07-02T05:00:00.000Z",
+      "couponRate": 3.8,
+      "expiration": "2024-07-01T05:00:00.000Z",
       "frequency": "Semestral",
       "market": "Primario",
-      "id": 4
+      "discountRate": 0,
+      "id": 6
     }
   ],
   "currencies": [

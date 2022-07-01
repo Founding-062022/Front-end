@@ -45,6 +45,9 @@
             :class="{ 'p-invalid': v$.nominalValue.$invalid && submitted }"
             id="nominalValue"
             placeholder="2000"
+            mode="decimal"
+            :minFractionDigits="2"
+            :maxFractionDigits="2"
           ></pv-input-number>
           <pv-dropdown
             :options="currencies"
@@ -75,6 +78,9 @@
           v-model="couponRate"
           id="couponRate"
           placeholder="2%"
+          mode="decimal"
+          :minFractionDigits="2"
+          :maxFractionDigits="2"
         ></pv-input-number>
         <small
           v-if="
@@ -86,6 +92,20 @@
             v$.couponRate.required.$message.replace("Value", "Coupon Rate")
           }}</small
         >
+      </div>
+      <div class="field">
+        <label
+          for="discountRate"
+        >Tasa de descuento (Opcional)</label
+        >
+        <pv-input-number
+          v-model="discountRate"
+          id="discountRate"
+          placeholder="3%"
+          mode="decimal"
+          :minFractionDigits="2"
+          :maxFractionDigits="2"
+        ></pv-input-number>
       </div>
       <div class="field">
         <label
@@ -168,6 +188,9 @@
             v-model="performanceRate"
             id="performanceRate"
             placeholder="Ingrese la tasa de rendimiento"
+            mode="decimal"
+            :minFractionDigits="2"
+            :maxFractionDigits="2"
           ></pv-input-number>
         </div>
         <div class="field">
@@ -214,6 +237,7 @@ export default {
       name: null,
       nominalValue: null,
       couponRate: null,
+      discountRate: null,
       expiration: null,
       marketType: "",
       performanceRate: null,
@@ -277,6 +301,7 @@ export default {
     async handleSubmit(isFormValid) {
       this.submitted = true;
       if (isFormValid) {
+        if (this.discountRate === null) this.discountRate = 0;
         const dtoBond = {
           name: this.name,
           userId: this.currentUser.id,
@@ -286,6 +311,7 @@ export default {
           expiration: this.expiration,
           frequency: this.frequency,
           market: this.marketType,
+          discountRate: this.discountRate,
         };
         if (this.marketType === "Secundario") {
           dtoBond.performanceRate = this.performanceRate;

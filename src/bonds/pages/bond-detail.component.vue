@@ -14,7 +14,11 @@
           v-model="methodSelected"
           class="w-full md:w-18rem p-inputtext-sm"
         ></pv-dropdown>
-        <pv-button label="Calcular" class="w-8rem"></pv-button>
+        <pv-button
+          @click="changeMethodOfAmortization"
+          label="Calcular"
+          class="w-8rem"
+        ></pv-button>
       </div>
     </div>
     <div class="grid text-xl">
@@ -53,6 +57,14 @@
           Capitalizacion: <span class="font-normal">{{ bond.frequency }}</span>
         </p>
       </div>
+      <div class="col-12 md:col-4">
+        <p v-if="bond.discountRate !== 0" class="font-bold">
+          Tasa de Descuento: <span class="font-normal">{{ bond.discountRate }}%</span>
+        </p>
+        <p v-else class="font-bold">
+          Tasa de Descuento: <span class="font-normal">No definido</span>
+        </p>
+      </div>
       <div v-if="bond.market === 'Secundario'" class="col-12 md:col-4">
         <p class="font-bold">
           Periodo Compra:
@@ -63,12 +75,9 @@
     <pv-data-table :value="table">
       <pv-column field="name"></pv-column>
       <div v-for="index in frequency + 1" v-bind:key="index">
-        <pv-column
-          :header="`${index - 1}`"
-          :field="(`period${index - 1}`)"
-        >
+        <pv-column :header="`${index - 1}`" :field="`period${index - 1}`">
           <template #body="slotProps">
-            <span>{{this.round(slotProps.data[`period${index - 1}`])}}</span>
+            <span>{{ this.round(slotProps.data[`period${index - 1}`]) }}</span>
           </template>
         </pv-column>
       </div>
@@ -138,6 +147,23 @@ export default {
     };
   },
   methods: {
+    async getBoundById() {
+      await BondService.getById(this.bondId)
+        .then((response) => {
+          this.bond = response.data;
+        })
+        .catch((error) => {
+          this.$toast.add({
+            severity: "error",
+            summary: "An error occurred",
+            detail: `${error.message}`,
+            life: 3000,
+          });
+        });
+    },
+    calculateVA(netFlowList, frequency, couponRate) {
+      return this.calculateValuesFutures(netFlowList, frequency, couponRate);
+    },
     calculateTIR(periods) {
       let ret = -1000000000.0;
       let interesInicial = -1.0;
@@ -180,54 +206,14 @@ export default {
       // eslint-disable-next-line
       return ret;
     },
-    vpl(valuation, periods) {
-      let ret = periods[0];
-
-      for (let i = 1; i < periods.length; i++)
-        ret += periods[i] / Math.pow(1.0 + valuation, i);
-      return ret;
-    },
-    sign(x) {
-      return x < 0.0 ? -1 : 1;
-    },
-    async getBoundById() {
-      await BondService.getById(this.bondId)
-        .then((response) => {
-          this.bond = response.data;
-        })
-        .catch((error) => {
-          this.$toast.add({
-            severity: "error",
-            summary: "An error occurred",
-            detail: `${error.message}`,
-            life: 3000,
-          });
-        });
-    },
-    calculateCouponRateInFrequency() {
-      let days = 0;
-      if (this.bond.frequency === "Anual") days = 360;
-      else if (this.bond.frequency === "Semestral") days = 180;
-      else if (this.bond.frequency === "Mensual") days = 30;
-      else if (this.bond.frequency === "Diario") days = 1;
-      return Math.pow(1 + this.bond.couponRate / 100, days / 360) - 1;
-    },
-    calculateVA() {
-      let annuity = this.calculateAnnuity();
-      let frequency = this.calculateFrequency();
-      let couponRate = this.calculateCouponRateInFrequency();
-      return (
-        annuity * ((1 - Math.pow(1 + couponRate, -frequency)) / couponRate)
+    calculateVAN(netFlowList, frequency, couponRate, inversion) {
+      console.log(netFlowList);
+      let netFlowAccumulate = this.calculateValuesFutures(
+        netFlowList,
+        frequency,
+        couponRate
       );
-    },
-    calculateAnnuity() {
-      let frequency = this.calculateFrequency();
-      let couponRate = this.calculateCouponRateInFrequency();
-      return this.round(
-        this.bond.nominalValue *
-          ((couponRate * Math.pow(1 + couponRate, frequency)) /
-            (Math.pow(1 + couponRate, frequency) - 1))
-      );
+      return this.round(netFlowAccumulate - inversion);
     },
     calculateMethodFrench() {
       let capital = {};
@@ -238,12 +224,12 @@ export default {
       let couponRate = this.calculateCouponRateInFrequency();
       const decimal = 5;
 
-      for (let i = 0; i < frequency + 1; i++) {
+      for (let i = 0; i <= frequency; i++) {
         if (i === 0) {
           capital.name = "Capital";
           amortization.name = "Amortización";
           interest.name = "Interes";
-          quota.name = "Quota";
+          quota.name = "Cuota";
           capital[`period${i}`] = this.bond.nominalValue;
           amortization[`period${i}`] = 0;
           interest[`period${i}`] = 0;
@@ -252,29 +238,115 @@ export default {
           quota[`period${i}`] = this.roundDecimal(
             this.bond.nominalValue *
               ((couponRate * Math.pow(1 + couponRate, frequency)) /
-                (Math.pow(1 + couponRate, frequency) - 1)), decimal
+                (Math.pow(1 + couponRate, frequency) - 1)),
+            decimal
           );
           interest[`period${i}`] = this.roundDecimal(
-            capital[`period${i - 1}`] * couponRate, decimal
+            capital[`period${i - 1}`] * couponRate,
+            decimal
           );
           amortization[`period${i}`] = this.roundDecimal(
-            quota[`period${i}`] - interest[`period${i}`], decimal
+            quota[`period${i}`] - interest[`period${i}`],
+            decimal
           );
           let capitalValue =
             capital[`period${i - 1}`] - amortization[`period${i}`];
           capital[`period${i}`] = this.roundDecimal(
-            capitalValue >= 0 ? capitalValue : capitalValue * -1, decimal
+            capitalValue >= 0 ? capitalValue : capitalValue * -1,
+            decimal
           );
         }
       }
+      this.table.splice(0, this.table.length);
       this.table.push(capital);
       this.table.push(amortization);
       this.table.push(interest);
       this.table.push(quota);
+    },
+    calculateMethodAmerican() {
+      let capital = {};
+      let amortization = {};
+      let interest = {};
+      let quota = {};
+      let frequency = this.calculateFrequency();
+      let couponRate = this.calculateCouponRateInFrequency();
+      //const decimal = 5;
+
+      for (let i = 0; i <= frequency; i++) {
+        if (i === 0) {
+          capital.name = "Capital";
+          amortization.name = "Amortización";
+          interest.name = "Interes";
+          quota.name = "Cuota";
+          capital[`period${i}`] = this.bond.nominalValue;
+          amortization[`period${i}`] = 0;
+          interest[`period${i}`] = 0;
+          quota[`period${i}`] = -this.bond.nominalValue;
+        } else if (i == frequency) {
+          amortization[`period${i}`] = this.bond.nominalValue;
+          capital[`period${i}`] =
+            capital[`period${i - 1}`] - amortization[`period${i}`];
+          interest[`period${i}`] = this.bond.nominalValue * couponRate;
+          quota[`period${i}`] =
+            interest[`period${i}`] + amortization[`period${i}`];
+        } else {
+          amortization[`period${i}`] = 0;
+          capital[`period${i}`] = this.bond.nominalValue;
+          interest[`period${i}`] = this.bond.nominalValue * couponRate;
+          quota[`period${i}`] =
+            interest[`period${i}`] + amortization[`period${i}`];
+        }
+      }
+      this.table.splice(0, this.table.length);
+      this.table.push(capital);
+      this.table.push(amortization);
+      this.table.push(interest);
+      this.table.push(quota);
+    },
+    calculateMethodAleman() {
+      let capital = {};
+      let amortization = {};
+      let interest = {};
+      let quota = {};
+      let frequency = this.calculateFrequency();
+      let couponRate = this.calculateCouponRateInFrequency();
+      for (let i = 0; i <= frequency; i++) {
+        if (i === 0) {
+          capital.name = "Capital";
+          amortization.name = "Amortización";
+          interest.name = "Interes";
+          quota.name = "Cuota";
+          capital[`period${i}`] = this.bond.nominalValue;
+          amortization[`period${i}`] = 0;
+          interest[`period${i}`] = 0;
+          quota[`period${i}`] = -this.bond.nominalValue;
+        } else {
+          amortization[`period${i}`] = capital[`period${0}`] / this.frequency;
+          capital[`period${i}`] =
+            capital[`period${i - 1}`] - amortization[`period${i}`];
+          interest[`period${i}`] = capital[`period${i - 1}`] * couponRate;
+          quota[`period${i}`] =
+            amortization[`period${i}`] + interest[`period${i}`];
+        }
+      }
+      this.table.splice(0, this.table.length);
+      this.table.push(capital);
+      this.table.push(amortization);
+      this.table.push(interest);
+      this.table.push(quota);
+    },
+    calculateFinancialIndicatorsPrimaryMarket() {
+      let frequency = this.calculateFrequency();
+      let rate = this.calculateCouponRateInFrequency();
+      if (this.bond.discountRate !== 0) {
+        rate = this.calculateRateInFrequency(this.bond.discountRate);
+      }
+      let quota = this.table.at(this.table.length - 1);
+      console.log(quota);
       this.van = this.calculateVAN(
         quota,
         frequency,
-        couponRate,
+        rate,
         this.bond.nominalValue
       );
       let quotaList = [];
@@ -282,7 +354,10 @@ export default {
         quotaList.push(quota[`period${i}`]);
       }
       this.tir = this.round(this.calculateTIR(quotaList));
-      this.va = this.roundDecimal(this.calculateVA(), 0);
+      this.va = this.roundDecimal(
+        this.calculateVA(quota, frequency, rate),
+        0
+      );
     },
     round(num) {
       let m = Number((Math.abs(num) * 100).toPrecision(15));
@@ -291,6 +366,16 @@ export default {
     roundDecimal(num, decimal) {
       let m = Number((Math.abs(num) * Math.pow(10, decimal)).toPrecision(15));
       return (Math.round(m) / Math.pow(10, decimal)) * Math.sign(num);
+    },
+    vpl(valuation, periods) {
+      let ret = periods[0];
+
+      for (let i = 1; i < periods.length; i++)
+        ret += periods[i] / Math.pow(1.0 + valuation, i);
+      return ret;
+    },
+    sign(x) {
+      return x < 0.0 ? -1 : 1;
     },
     formatDate(date) {
       const dateInFormat = new Date(Date.parse(date));
@@ -333,6 +418,22 @@ export default {
         return years * 360 + months * 30 + days;
       }
     },
+    calculateRateInFrequency(rate) {
+      let days = 0;
+      if (this.bond.frequency === "Anual") days = 360;
+      else if (this.bond.frequency === "Semestral") days = 180;
+      else if (this.bond.frequency === "Mensual") days = 30;
+      else if (this.bond.frequency === "Diario") days = 1;
+      return Math.pow(1 + rate / 100, days / 360) - 1;
+    },
+    calculateCouponRateInFrequency() {
+      let days = 0;
+      if (this.bond.frequency === "Anual") days = 360;
+      else if (this.bond.frequency === "Semestral") days = 180;
+      else if (this.bond.frequency === "Mensual") days = 30;
+      else if (this.bond.frequency === "Diario") days = 1;
+      return Math.pow(1 + this.bond.couponRate / 100, days / 360) - 1;
+    },
     calculateValuesFutures(netFlowList, frequency, couponRate) {
       let netFlowAccumulated = 0;
       for (let i = 1; i <= frequency; i++) {
@@ -341,14 +442,14 @@ export default {
       }
       return netFlowAccumulated;
     },
-    calculateVAN(netFlowList, frequency, couponRate, inversion) {
-      console.log(netFlowList);
-      let netFlowAccumulate = this.calculateValuesFutures(
-        netFlowList,
-        frequency,
-        couponRate
-      );
-      return this.round(netFlowAccumulate - inversion);
+    changeMethodOfAmortization() {
+      if (this.methodSelected === "Metodo Frances") {
+        this.calculateMethodFrench();
+      } else if (this.methodSelected === "Metodo Americano") {
+        this.calculateMethodAmerican();
+      } else {
+        this.calculateMethodAleman();
+      }
     },
   },
   async mounted() {
@@ -356,6 +457,7 @@ export default {
     await this.getBoundById();
     this.frequency = this.calculateFrequency();
     this.calculateMethodFrench();
+    this.calculateFinancialIndicatorsPrimaryMarket();
   },
 };
 </script>
