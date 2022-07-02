@@ -36,14 +36,6 @@
           <span class="font-normal">{{ formatDate(bond.expiration) }}</span>
         </p>
       </div>
-      <div v-if="bond.market === 'Secundario'" class="col-12 md:col-4">
-        <p class="font-bold">
-          Tasa de Rendimiento:
-          <span class="font-normal">{{
-            formatPercentage(bond.performanceRate)
-          }}</span>
-        </p>
-      </div>
       <div class="col-12 md:col-4">
         <p class="font-bold">
           Tasa Cupon:
@@ -65,10 +57,9 @@
           Tasa de Descuento: <span class="font-normal">No definido</span>
         </p>
       </div>
-      <div v-if="bond.market === 'Secundario'" class="col-12 md:col-4">
-        <p class="font-bold">
-          Periodo Compra:
-          <span class="font-normal">{{ formatDate(bond.buyingPeriod) }}</span>
+      <div v-if="bond.market === 'Primario'" class="col-12 md:col-4">
+        <p class="font-bold">Mercado Secundario:
+          <a href="" class="info-color font-normal">Agregar</a>
         </p>
       </div>
     </div>
@@ -116,7 +107,29 @@
           class="p-button-warning"
           :label="`TIR: ${this.tir}%`"
         ></pv-button>
-        <pv-button :label="`VA: ${this.va} ${bond.currency}`"></pv-button>
+        <pv-button class="p-button-info" :label="`VA: ${this.va} ${bond.currency}`"></pv-button>
+      </div>
+    </div>
+  </div>
+  <div v-if="bond.market === 'Secundario'">
+    <pv-divider></pv-divider>
+    <div class="container pt-4">
+      <h2>Mercado Secundario</h2>
+      <div class="grid text-xl">
+        <div class="col-12 md:col-4">
+          <p class="font-bold">
+            Periodo Compra:
+            <span class="font-normal">{{ formatDate(bond.buyingPeriod) }}</span>
+          </p>
+        </div>
+        <div class="col-12 md:col-4">
+          <p class="font-bold">
+            Tasa de Rendimiento:
+            <span class="font-normal">{{
+                formatPercentage(bond.performanceRate)
+              }}</span>
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -470,5 +483,8 @@ export default {
 }
 .h-content {
   min-height: calc(100vh - 190px);
+}
+.info-color {
+  color: #5bc0de
 }
 </style>

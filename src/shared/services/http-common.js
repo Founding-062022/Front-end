@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://localhost:5050/api/v1",
+  baseURL: "https://founding-api.herokuapp.com",
   headers: { "Content-type": "application/json" },
 });

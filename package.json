@@ -11,6 +11,7 @@
     "@vuelidate/core": "^2.0.0-alpha.41",
     "@vuelidate/validators": "^2.0.0-alpha.29",
     "axios": "^0.27.2",
+    "firebase": "^9.8.4",
     "format": "^0.2.2",
     "json-server-auth": "^2.1.0",
     "nerdamer": "^1.1.13",

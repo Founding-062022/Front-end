@@ -27,6 +27,7 @@ import Calendar from "primevue/calendar";
 import Menu from "primevue/menu";
 import ColumnGroup from "primevue/columngroup";
 import Row from "primevue/row";
+import Divider from "primevue/divider";
 
 const app = createApp(App);
 
@@ -55,4 +56,5 @@ app.component("pv-calendar", Calendar);
 app.component("pv-menu", Menu);
 app.component("pv-column-group", ColumnGroup);
 app.component("pv-row", Row);
+app.component("pv-divider", Divider);
 app.mount("#app");
