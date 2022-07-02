@@ -321,7 +321,7 @@ export default {
               content: "Consultar indicadores financieros",
             },
           ],
-          photo: "/src/shared/resources/img/indicadores%20financieros.jpg",
+          photo: "http://especializate.usat.edu.pe/wp-content/uploads/2020/06/La-importancia-de-los-indicadores-financieros.jpg",
         },
         {
           id: 2,
@@ -336,7 +336,7 @@ export default {
               content: "Consultar indicadores financieros",
             },
           ],
-          photo: "/src/shared/resources/img/compara.jpg",
+          photo: "https://enterpriseviewpoint.com/wp-content/uploads/2018/06/Image-Credit-shutterstock.jpg",
         },
         {
           id: 3,
@@ -351,7 +351,7 @@ export default {
               content: "Consultar indicadores financieros",
             },
           ],
-          photo: "/src/shared/resources/img/mercados.jpg",
+          photo: "https://pbs.twimg.com/media/FMMcjJJXoAI-0v7?format=jpg&name=4096x4096",
         },
       ],
     };
