@@ -1,8 +1,9 @@
 import axios from "axios";
 import User from "../models/user.entity";
 import router from "../../router";
+import http from "../../shared/services/http-common";
 
-const API_URL = "http://localhost:5050/api/v1";
+const API_URL = "https://founding-api.herokuapp.com";
 const USER_KEY = "user";
 
 class AuthenticateApiService {
@@ -27,7 +28,7 @@ class AuthenticateApiService {
     });
   }
   signUp(request) {
-    return axios.post(`${API_URL}/register`, request);
+    return http.post(`${API_URL}/register`, request);
   }
   signOff() {
     router.push({ name: "home" }).then((r) => {
