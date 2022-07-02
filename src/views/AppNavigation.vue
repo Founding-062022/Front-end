@@ -18,11 +18,18 @@
           label="Mis bonos"
           class="p-button-text p-toolbar-separator visible"
         ></pv-button>
+        <pv-button
+          label="Ayuda"
+          style="color: black"
+          class="p-button-text p-toolbar-separator visible"
+          @click="this.$router.push({name: 'help'})"
+        ></pv-button>
       </div>
       <div class="flex" v-else>
         <pv-button
           label="Inicio"
           class="p-button-text p-toolbar-separator visible"
+          @click="this.$router.push({name: 'home'})"
         ></pv-button>
         <a
           style="color: #000000"
@@ -31,6 +38,12 @@
           class="p-button p-button-text no-underline p-toolbar-separator visible"
           >Unirse</a
         >
+        <pv-button
+          label="Ayuda"
+          style="color: black"
+          class="p-button-text p-toolbar-separator visible"
+          @click="this.$router.push({name: 'help'})"
+        ></pv-button>
       </div>
     </template>
     <template #end>
@@ -125,6 +138,7 @@ export default {
           label: "Mi Perfil",
           icon: "pi pi-user",
           command: (event) => {
+            this.$router.push({name: 'user-profile', params: { idUser: this.currentUser.id}});
             this.$refs["user-options"].toggle(event);
           },
         },

@@ -28,6 +28,7 @@ import Menu from "primevue/menu";
 import ColumnGroup from "primevue/columngroup";
 import Row from "primevue/row";
 import Divider from "primevue/divider";
+import Textarea from "primevue/textarea";
 
 const app = createApp(App);
 
@@ -57,4 +58,5 @@ app.component("pv-menu", Menu);
 app.component("pv-column-group", ColumnGroup);
 app.component("pv-row", Row);
 app.component("pv-divider", Divider);
+app.component("pv-textarea", Textarea);
 app.mount("#app");

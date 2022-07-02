@@ -51,15 +51,17 @@
       </div>
       <div class="col-12 md:col-4">
         <p v-if="bond.discountRate !== 0" class="font-bold">
-          Tasa de Descuento: <span class="font-normal">{{ bond.discountRate }}%</span>
+          Tasa de Descuento:
+          <span class="font-normal">{{ bond.discountRate }}%</span>
         </p>
         <p v-else class="font-bold">
           Tasa de Descuento: <span class="font-normal">No definido</span>
         </p>
       </div>
       <div v-if="bond.market === 'Primario'" class="col-12 md:col-4">
-        <p class="font-bold">Mercado Secundario:
-          <a href="" class="info-color font-normal">Agregar</a>
+        <p class="font-bold">
+          Mercado Secundario:
+          <a @click="this.dialogAddSecondaryMarket = !this.dialogAddSecondaryMarket" class="info-color font-normal">Agregar</a>
         </p>
       </div>
     </div>
@@ -107,7 +109,10 @@
           class="p-button-warning"
           :label="`TIR: ${this.tir}%`"
         ></pv-button>
-        <pv-button class="p-button-info" :label="`VA: ${this.va} ${bond.currency}`"></pv-button>
+        <pv-button
+          class="p-button-info"
+          :label="`VA: ${this.va} ${bond.currency}`"
+        ></pv-button>
       </div>
     </div>
   </div>
@@ -126,26 +131,107 @@
           <p class="font-bold">
             Tasa de Rendimiento:
             <span class="font-normal">{{
-                formatPercentage(bond.performanceRate)
-              }}</span>
+              formatPercentage(bond.performanceRate)
+            }}</span>
           </p>
+        </div>
+      </div>
+      <div>
+        <pv-data-table :value="tableSecondary">
+          <pv-column field="name"></pv-column>
+          <div
+            v-for="index in frequency - (remainingPeriod - 1)"
+            v-bind:key="index"
+          >
+            <pv-column
+              :header="`${index + (remainingPeriod - 1)}`"
+              :field="`period${index + (remainingPeriod - 1)}`"
+            >
+              <template #body="slotProps">
+                <span>{{
+                  this.roundDecimal(slotProps.data[`period${index + (remainingPeriod - 1)}`], 2)
+                }}</span>
+              </template>
+            </pv-column>
+          </div>
+        </pv-data-table>
+      </div>
+      <div class="pt-4 pb-4">
+        <h2>Indicadores financieros</h2>
+        <div class="grid gap-2 pt-1 justify-content-between">
+          <pv-button
+            v-if="vanSecondary > 0"
+            class="p-button-success col-12 md:col-3"
+            :label="`VAN: ${this.vanSecondary} ${bond.currency}`"
+          >
+          </pv-button>
+          <pv-button
+            v-else-if="vanSecondary < 0"
+            class="p-button-danger col-12 md:col-3"
+            :label="`VAN: ${this.vanSecondary * -1} ${bond.currency}`"
+          ></pv-button>
+          <pv-button
+            v-else
+            class="p-button-warning col-12 md:col-3"
+            :label="`VAN: ${this.vanSecondary} ${bond.currency}`"
+          ></pv-button>
+          <pv-button
+            v-if="this.tirSecondary > 0"
+            class="p-button-success col-12 md:col-3"
+            :label="`TIR: ${this.tirSecondary}%`"
+          ></pv-button>
+          <pv-button
+            v-else-if="this.tirSecondary < 0"
+            class="p-button-danger col-12 md:col-3"
+            :label="`TIR: ${this.tirSecondary}%`"
+          ></pv-button>
+          <pv-button
+            v-else
+            class="p-button-warning col-12 md:col-3"
+            :label="`TIR: ${this.tirSecondary}%`"
+          ></pv-button>
+          <pv-button
+            class="p-button-info col-12 md:col-3"
+            :label="`PSV: ${this.priceSellBond} ${bond.currency}`"
+          ></pv-button>
+          <pv-button
+            class="p-button-info col-12 md:col-3"
+            :label="`PC: ${this.priceBuyBond} ${bond.currency}`"
+          ></pv-button>
         </div>
       </div>
     </div>
   </div>
+  <bond-add-secondary-market
+    v-bind:dialog-add-secondary-market-visible="dialogAddSecondaryMarket"
+    v-bind:bond-id="bondId"
+    v-on:complete-add-secondary-market="completeAddSecondaryMarket"
+    v-on:close-dialog-bond-add-secondary="
+      dialogAddSecondaryMarket = !dialogAddSecondaryMarket
+    "
+  ></bond-add-secondary-market>
 </template>
 
 <script>
 import BondService from "../services/bond.service.js";
+import BondAddSecondaryMarket from "./bond-add-secondary-market.dialog.vue";
 export default {
   name: "bond-detail",
+  components: { BondAddSecondaryMarket },
+
   data() {
     return {
+      dialogAddSecondaryMarket: false,
       bondId: null,
       bond: {},
       van: null,
+      vanSecondary: null,
       tir: null,
+      tirSecondary: null,
       va: null,
+      priceBuyBond: null,
+      priceSellBond: null,
+      remainingPeriod: null,
       annuity: null,
       methodSelected: "Metodo Frances",
       options: ["Metodo Frances", "Metodo Americano", "Metodo Aleman"],
@@ -156,6 +242,7 @@ export default {
         { name: "Cuota", period1: 10, period2: 20, period3: 30 },
       ],
       table: [],
+      tableSecondary: [],
       frequency: 0,
     };
   },
@@ -316,6 +403,10 @@ export default {
       this.table.push(interest);
       this.table.push(quota);
     },
+    completeAddSecondaryMarket() {
+      this.dialogAddSecondaryMarket = !this.dialogAddSecondaryMarket;
+      this.getBoundById();
+    },
     calculateMethodAleman() {
       let capital = {};
       let amortization = {};
@@ -367,10 +458,7 @@ export default {
         quotaList.push(quota[`period${i}`]);
       }
       this.tir = this.round(this.calculateTIR(quotaList));
-      this.va = this.roundDecimal(
-        this.calculateVA(quota, frequency, rate),
-        0
-      );
+      this.va = this.roundDecimal(this.calculateVA(quota, frequency, rate), 0);
     },
     round(num) {
       let m = Number((Math.abs(num) * 100).toPrecision(15));
@@ -413,13 +501,6 @@ export default {
       let months = expire.getMonth() + 1 - (today.getMonth() + 1);
       let days = expire.getDate() - today.getDate();
 
-      if (this.bond.marketType === "Secundario") {
-        let buyingPeriod = new Date(Date.parse(this.bond.buyingPeriod));
-        years = years - buyingPeriod.getFullYear();
-        months = months - (buyingPeriod.getMonth() + 1);
-        days = days - buyingPeriod.getDate();
-      }
-
       if (this.bond.frequency === "Anual") {
         return years;
       } else if (this.bond.frequency === "Semestral") {
@@ -455,6 +536,59 @@ export default {
       }
       return netFlowAccumulated;
     },
+    calculateRemainingDate(dateData) {
+      let timeToday = Date.now();
+      let dateExpire = Date.parse(dateData);
+      let expire = new Date(dateExpire);
+      let today = new Date(timeToday);
+
+      let years = expire.getFullYear() - today.getFullYear();
+      let months = expire.getMonth() + 1 - (today.getMonth() + 1);
+      let days = expire.getDate() - today.getDate();
+
+      if (this.bond.frequency === "Anual") {
+        return years;
+      } else if (this.bond.frequency === "Semestral") {
+        if (months >= 6) return years * 2 + 1;
+        else return years * 2;
+      } else if (this.bond.frequency === "Mensual") {
+        return years * 12 + months;
+      } else if (this.bond.frequency === "Diario") {
+        return years * 360 + months * 30 + days;
+      }
+    },
+    calculateRemainingAmortization(quotaPrimary) {
+      let quota = {};
+      let quota2 = {};
+      let quotaList = [];
+      let remainingDate = this.calculateRemainingDate(this.bond.buyingPeriod);
+      let frequency = this.calculateFrequency();
+      let saleValue = 0;
+      let performanceRateInFrequency =this.calculateRateInFrequency(this.bond.performanceRate);
+      quota.name = "Quota";
+      quota2.name = "Quota";
+      for (let i = frequency; i >= remainingDate; i--) {
+        if (i === remainingDate) {
+          quota[`period${i}`] = -saleValue;
+          quota2[`period${i}`] = -saleValue;
+          this.priceBuyBond = this.roundDecimal(saleValue, 2);
+        } else {
+          quota[`period${i}`] = quotaPrimary[`period${i}`];
+          quota2[`period${i}`] =
+            quotaPrimary[`period${i}`] /
+            Math.pow(1 + performanceRateInFrequency, i - remainingDate);
+          this.priceSellBond += quotaPrimary[`period${i}`];
+        }
+        saleValue += quota2[`period${i}`];
+        quotaList.push(quota[`period${i}`]);
+      }
+      this.priceSellBond = this.roundDecimal(this.priceSellBond, 2);
+      this.vanSecondary = this.roundDecimal(this.priceSellBond - this.priceBuyBond, 2);
+      quotaList = quotaList.reverse();
+      this.tirSecondary = this.roundDecimal(this.calculateTIR(quotaList), 2);
+      this.tableSecondary.splice(0, this.table.length);
+      this.tableSecondary.push(quota);
+    },
     changeMethodOfAmortization() {
       if (this.methodSelected === "Metodo Frances") {
         this.calculateMethodFrench();
@@ -463,6 +597,7 @@ export default {
       } else {
         this.calculateMethodAleman();
       }
+      this.calculateRemainingAmortization(this.table.at(3));
     },
   },
   async mounted() {
@@ -471,6 +606,8 @@ export default {
     this.frequency = this.calculateFrequency();
     this.calculateMethodFrench();
     this.calculateFinancialIndicatorsPrimaryMarket();
+    this.remainingPeriod = this.calculateRemainingDate(this.bond.buyingPeriod);
+    this.calculateRemainingAmortization(this.table.at(3));
   },
 };
 </script>
@@ -485,6 +622,6 @@ export default {
   min-height: calc(100vh - 190px);
 }
 .info-color {
-  color: #5bc0de
+  color: #5bc0de;
 }
 </style>
