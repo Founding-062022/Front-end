@@ -3,8 +3,9 @@ import User from "../models/user.entity";
 import router from "../../router";
 import http from "../../shared/services/http-common";
 
-const API_URL = "https://founding-api.herokuapp.com";
+const API_URL = "http://localhost:5050/api/v1";
 const USER_KEY = "user";
+console.log(API_URL);
 
 class AuthenticateApiService {
   signIn(request) {

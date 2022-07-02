@@ -19,6 +19,11 @@
       "id": 2
     },
     {
+      "email": "macordova@dyglovo.com",
+      "password": "$2a$10$qx/9MGhkfxxmk0gnh5qpW.XV5FoILSRYwDYjmXVh/wqFjuwOMEtgC",
+      "id": 3
+    },
+    {
       "email": "leonardo.grau@outlook.com.pe",
       "password": "$2a$10$WMQtjMbpLPSpHcEcJQwWxuHmYb.7LHt6fvoZmlJ06R.3BIpd3Dd4C",
       "name": "Leonardo Manuel",
@@ -26,6 +31,15 @@
       "country": "Chipre",
       "username": "LeoGrau",
       "id": 4
+    },
+    {
+      "email": "heber_10_2000@gmail.com",
+      "password": "$2a$10$dPKMw3VobfLIOBx51HfL5Osup3KKOjProuJd/UXpzLrlOcnNqy5n.",
+      "name": "Heber Cordova",
+      "lastname": "Jimenez",
+      "country": "Macedonia del Norte",
+      "username": "hbcordova",
+      "id": 5
     }
   ],
   "bonds": [
